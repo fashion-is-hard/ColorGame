@@ -2,107 +2,410 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>CJ ONSTYLE 컬러 믹서 – Vibrant Lime Match</title>
+  <title>CJ ONSTYLE · Vibrant Lime 컬러 믹서</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-  min-height: 100vh;
-  padding: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #f9efff 0%, #efe3ff 40%, #dfd0ff 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      color: #2a1d47;
+    }
 
-  /* 라이트 퍼플 배경으로 변경 */
-  background: linear-gradient(135deg, #f5e8ff 0%, #ede1ff 40%, #d9c7ff 100%);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #2a1d47;
-}
+    .game-root {
+      width: 780px;
+      max-width: 100%;
+      padding: 24px 26px 22px;
+      background: #ffffffee;
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 2px solid #d5c3ff;
+      box-shadow:
+        0 18px 40px rgba(132, 96, 205, 0.25);
+    }
 
-.game-root {
-  width: 760px;
-  max-width: 100%;
-  padding: 22px 26px;
-  background: #ffffffdd;
-  backdrop-filter: blur(10px);
-  border-radius: 18px;
+    .brand-tag {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7c60c9;
+      margin-bottom: 4px;
+    }
 
-  /* 보라빛 윤곽 */
-  border: 2px solid #d3bfff;
-  box-shadow: 0 8px 24px rgba(140, 90, 200, 0.18);
-}
+    h1 {
+      font-size: 22px;
+      letter-spacing: 0.02em;
+      color: #36205f;
+      margin-bottom: 4px;
+    }
 
-/* 브랜드 태그 */
-.brand-tag {
-  color: #7a5fc7;
-}
+    .subtitle {
+      font-size: 12px;
+      color: #54379f;
+      opacity: 0.9;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
 
-/* 제목/서브 */
-h1 {
-  color: #3b1f72;
-}
-.subtitle {
-  color: #533b9d;
-}
+    .top-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
 
-/* 상단 패널 */
-.panel {
-  background: #ffffffcc;
-  backdrop-filter: blur(10px);
-  border: 1px solid #dcd2ff;
-  border-radius: 14px;
-  color: #2f2458;
-}
+    .panel {
+      flex: 1 1 330px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid #ded3ff;
+      background: #fbf8ff;
+      box-shadow: 0 4px 14px rgba(148, 120, 215, 0.1);
+      font-size: 12px;
+    }
 
-/* Target / Mix 라벨 */
-.panel-pill.target {
-  background: #d8fff1;
-  border-color: #23e896;
-  color: #0b4c38;
-}
-.panel-pill.mix {
-  background: #efe4ff;
-  border-color: #bca4ff;
-  color: #5837b8;
-}
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
 
-/* 색칩 */
-.swatch {
-  border: 2px solid rgba(90, 66, 140, 0.4);
-  box-shadow: 0 0 0 1px rgba(120, 90, 190, 0.2);
-}
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-/* 팔레트 색 박스 */
-.paint {
-  border: 1px solid rgba(120, 90, 190, 0.25);
-  box-shadow: 0 2px 10px rgba(120, 90, 190, 0.25);
-}
-.paint:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(120, 90, 190, 0.35);
-}
+    .panel-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid #c6b7ff;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #f3ecff;
+      color: #5a3ebb;
+    }
 
-/* 버튼 */
-.btn-primary {
-  background: linear-gradient(135deg, #23e896, #a3ffaf);
-  color: #04341f;
-}
-.btn-secondary {
-  background: #ffffffaa;
-  border: 1px solid #c8b3ff;
-  color: #4b368b;
-}
+    .panel-pill.target {
+      border-color: #23e896;
+      background: #d8fff1;
+      color: #055334;
+    }
 
-/* 결과 박스 */
-.result-row {
-  border-top: 1px solid #c9b4ff;
-}
-.match-score {
-  color: #23e896;
-}
-.result-note {
-  color: #4a2f97;
-}
+    .panel-label {
+      font-size: 11px;
+      opacity: 0.85;
+    }
 
+    .swatch-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 74px;
+      height: 74px;
+      border-radius: 14px;
+      border: 2px solid rgba(98, 77, 158, 0.45);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.6),
+        0 4px 10px rgba(111, 88, 190, 0.25);
+      background: #eee;
+    }
+
+    .panel-text-main {
+      font-size: 14px;
+      margin-bottom: 2px;
+      color: #312153;
+    }
+
+    .panel-rgb {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 4px;
+      color: #615084;
+    }
+
+    .panel-desc {
+      font-size: 11px;
+      opacity: 0.8;
+      color: #77639e;
+    }
+
+    .drops-info {
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.85;
+      color: #5a477e;
+    }
+
+    .drops-bar {
+      margin-top: 6px;
+      height: 6px;
+      width: 100%;
+      border-radius: 999px;
+      background: #ebe2ff;
+      overflow: hidden;
+    }
+
+    .drops-bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #23e896, #ffe55c);
+      transition: width 0.15s ease-out;
+    }
+
+    .palette-section {
+      padding: 12px 12px 14px;
+      border-radius: 16px;
+      border: 1px solid #ded3ff;
+      background: #faf6ff;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(160, 130, 220, 0.12);
+    }
+
+    .palette-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #3b2667;
+    }
+
+    .palette-header span {
+      font-size: 11px;
+      opacity: 0.8;
+      color: #7155b0;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .paint {
+      position: relative;
+      padding-top: 70%;
+      border-radius: 12px;
+      border: 1px solid rgba(116, 94, 188, 0.25);
+      cursor: pointer;
+      box-shadow:
+        0 2px 10px rgba(146, 121, 210, 0.3);
+      overflow: hidden;
+      transition: transform 0.07s ease, box-shadow 0.07s ease;
+    }
+
+    .paint:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 18px rgba(142, 114, 220, 0.45);
+    }
+
+    .paint-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px 8px;
+      color: #111;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .paint-label {
+      align-self: flex-start;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      font-size: 11px;
+    }
+
+    .paint-meta {
+      align-self: flex-end;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      font-size: 10px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    button {
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.07s ease, box-shadow 0.07s ease,
+        filter 0.07s ease;
+    }
+
+    button:active {
+      transform: translateY(2px);
+      box-shadow: none;
+      filter: brightness(0.96);
+    }
+
+    .btn-primary {
+      background: linear-gradient(120deg, #23e896, #b4ff9a);
+      color: #033522;
+      box-shadow: 0 10px 24px rgba(55, 196, 140, 0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      border: 1px solid #cbb8ff;
+      color: #54349b;
+      box-shadow: 0 6px 18px rgba(149, 118, 216, 0.25);
+      letter-spacing: 0.03em;
+    }
+
+    .helper-text {
+      font-size: 11px;
+      opacity: 0.8;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      color: #6b569e;
+    }
+
+    /* 결과 카드 */
+    .result-row {
+      display: none;
+    }
+
+    .result-card {
+      margin-top: 4px;
+      padding: 12px 14px 12px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #f6f1ff 0, #fbf9ff 40%, #ffffff 100%);
+      border: 1px solid #d6c5ff;
+      box-shadow: 0 10px 26px rgba(127, 96, 206, 0.25);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .result-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .result-title {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7a5bc5;
+    }
+
+    .result-score-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .match-score {
+      font-size: 30px;
+      font-weight: 800;
+      color: #23e896;
+    }
+
+    .result-text {
+      font-size: 13px;
+      color: #38255f;
+    }
+
+    .result-note {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #6d579f;
+    }
+
+    .result-swatches {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .result-swatch-block {
+      flex: 1;
+      max-width: 120px;
+    }
+
+    .result-swatch-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #7d61c8;
+      margin-bottom: 4px;
+    }
+
+    .result-swatch-box {
+      width: 100%;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(98, 77, 158, 0.45);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.6);
+      background: #eee;
+    }
+
+    .result-badge {
+      margin-top: 4px;
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #f1e8ff;
+      color: #54349b;
+      font-size: 10px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 14px;
+      }
+      .game-root {
+        padding: 18px 16px;
+      }
+      .top-row {
+        flex-direction: column;
+      }
+      .palette-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .result-card {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -110,8 +413,8 @@ h1 {
     <div class="brand-tag">CJ ONSTYLE · INSPIRING PURPLE × VIBRANT LIME</div>
     <h1>Vibrant Lime 컬러 믹서</h1>
     <div class="subtitle">
-      흰색 · 검은색 · 노란색 · 파란색 · 빨간색만으로 CJ ONSTYLE의<br />
-      시그니처 라임그린에 얼마나 가까이 갈 수 있을까요?
+      흰색 · 검은색 · 노란색 · 파란색 · 빨간색만으로<br />
+      CJ ONSTYLE의 시그니처 라임그린에 얼마나 가까이 갈 수 있을까요?
     </div>
 
     <div class="top-row">
@@ -129,8 +432,7 @@ h1 {
             <div class="panel-text-main" id="target-name">#23E896</div>
             <div class="panel-rgb" id="target-rgb">RGB(35, 232, 150)</div>
             <div class="panel-desc">
-              CJ ONSTYLE 아이덴티티에서 Inspiring Purple과 함께 쓰이는
-              네온 라임 포인트 컬러입니다.
+              CJ ONSTYLE 아이덴티티에서 퍼플과 대비를 이루는 네온 라임 포인트 컬러입니다.
             </div>
           </div>
         </div>
@@ -140,7 +442,7 @@ h1 {
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title">
-            <div class="panel-pill mix">Mix</div>
+            <div class="panel-pill">Mix</div>
             <span class="panel-label">내가 만든 컬러</span>
           </div>
         </div>
@@ -152,8 +454,7 @@ h1 {
             </div>
             <div class="panel-rgb" id="mix-rgb">RGB(0, 0, 0)</div>
             <div class="drops-info">
-              사용한 물감 방울 수:
-              <span id="drop-count">0</span>
+              사용한 물감 방울 수: <span id="drop-count">0</span>
             </div>
             <div class="drops-bar">
               <div class="drops-bar-inner" id="drops-bar-inner"></div>
@@ -174,41 +475,58 @@ h1 {
 
     <!-- 버튼 -->
     <div class="controls">
-      <button class="btn-primary" id="btn-result">결과 보기 (Vibrant Lime과 비교)</button>
+      <button class="btn-primary" id="btn-result">결과 보기 · Vibrant Lime과 비교</button>
       <button class="btn-secondary" id="btn-reset">전체 초기화</button>
     </div>
 
     <div class="helper-text">
       <span>여러 색을 섞을수록 한 방울의 영향은 작아집니다.</span>
-      <span>원하면 한 가지 색만으로도 얼마나 가까운지 테스트해 보세요.</span>
+      <span>CJ ONSTYLE의 라임 무드를 얼마나 정확하게 잡을 수 있는지 테스트해 보세요.</span>
     </div>
 
-    <!-- 결과 영역 -->
-    <div class="result-row" id="result-row" style="display:none;">
-      <div class="result-main">
-        <div class="match-score" id="match-score">0%</div>
-        <div id="match-text">아직 결과를 보지 않았어요.</div>
+    <!-- 결과 카드 -->
+    <div class="result-row" id="result-row">
+      <div class="result-card">
+        <div class="result-main">
+          <div class="result-title">COLOR MATCH RESULT</div>
+          <div class="result-score-row">
+            <div class="match-score" id="match-score">0%</div>
+            <div class="result-text" id="match-text">아직 결과를 보지 않았어요.</div>
+          </div>
+          <div class="result-note" id="match-note"></div>
+        </div>
+        <div class="result-swatches">
+          <div class="result-swatch-block">
+            <div class="result-swatch-label">TARGET · VIBRANT LIME</div>
+            <div class="result-swatch-box" id="result-target"></div>
+          </div>
+          <div class="result-swatch-block">
+            <div class="result-swatch-label">YOUR MIX</div>
+            <div class="result-swatch-box" id="result-mix"></div>
+            <div class="result-badge" id="result-badge">0방울 사용</div>
+          </div>
+        </div>
       </div>
-      <div class="result-note" id="match-note"></div>
     </div>
   </div>
 
   <script>
-    // === 목표색: 이미지에서 읽은 Vibrant Lime (#23E896, RGB 35/232/150) ===
+    // === 목표색: Vibrant Lime ===
     const TARGET = {
       hex: "#23E896",
       rgb: [35, 232, 150]
     };
 
-    // === 사용할 물감 5가지 (화면용 RGB 값) ===
+    // === 사용할 물감 5가지 ===
     const PAINTS = [
-      { id: "white", nameKo: "화이트", nameEn: "White",  rgb: [255, 255, 255] },
-      { id: "black", nameKo: "블랙",   nameEn: "Black",  rgb: [0, 0, 0] },
-      { id: "yellow",nameKo: "옐로우", nameEn: "Yellow", rgb: [255, 224, 0] },
-      { id: "blue",  nameKo: "블루",   nameEn: "Blue",   rgb: [0, 105, 255] },
-      { id: "red",   nameKo: "레드",   nameEn: "Red",    rgb: [235, 51, 72] },
+      { id: "white",  nameKo: "화이트", nameEn: "White",  rgb: [255, 255, 255] },
+      { id: "black",  nameKo: "블랙",   nameEn: "Black",  rgb: [0, 0, 0] },
+      { id: "yellow", nameKo: "옐로우", nameEn: "Yellow", rgb: [255, 224, 0] },
+      { id: "blue",   nameKo: "블루",   nameEn: "Blue",   rgb: [0, 105, 255] },
+      { id: "red",    nameKo: "레드",   nameEn: "Red",    rgb: [235, 51, 72] },
     ];
 
+    // DOM 참조
     const targetSwatch = document.getElementById("target-swatch");
     const targetRgbEl = document.getElementById("target-rgb");
 
@@ -226,13 +544,16 @@ h1 {
     const matchScoreEl = document.getElementById("match-score");
     const matchTextEl = document.getElementById("match-text");
     const matchNoteEl = document.getElementById("match-note");
+    const resultTargetSwatch = document.getElementById("result-target");
+    const resultMixSwatch = document.getElementById("result-mix");
+    const resultBadge = document.getElementById("result-badge");
 
-    let drops = [];       // {rgb: [r,g,b], paintId: string}
+    // 상태
+    let drops = [];       // { rgb: [r,g,b], paintId: string }
     let mixedColor = [0, 0, 0];
 
-    // --- 유틸 ---
+    // 유틸
     const rgbToCss = ([r,g,b]) => `rgb(${r}, ${g}, ${b})`;
-
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     function colorDistance(c1, c2) {
@@ -242,14 +563,15 @@ h1 {
       return Math.sqrt(dr*dr + dg*dg + db*db);
     }
 
-    // --- 초기 세팅 ---
+    // 초기 타깃 표시
     function initTargetView() {
       targetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
       targetRgbEl.textContent = `RGB(${TARGET.rgb[0]}, ${TARGET.rgb[1]}, ${TARGET.rgb[2]})`;
+      resultTargetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
     }
 
+    // 팔레트 렌더링 (각 색 사용 방울 수 표시)
     function renderPalette() {
-      // 각 물감별 방울 수 집계
       const usage = {};
       PAINTS.forEach(p => usage[p.id] = 0);
       drops.forEach(d => usage[d.paintId]++);
@@ -282,6 +604,7 @@ h1 {
       });
     }
 
+    // 믹스 색 재계산
     function recalcMixedColor() {
       if (drops.length === 0) {
         mixedColor = [0, 0, 0];
@@ -313,27 +636,31 @@ h1 {
       }
     }
 
+    // 물감 한 방울 추가
     function addDrop(paint) {
       drops.push({ rgb: paint.rgb.slice(), paintId: paint.id });
       recalcMixedColor();
       renderPalette();
-      // 새로 조색되면 이전 결과는 숨김
-      resultRow.style.display = "none";
+      resultRow.style.display = "none"; // 새로 섞으면 이전 결과 숨김
     }
 
+    // 전체 초기화
     function resetAll() {
       drops = [];
       mixedColor = [0, 0, 0];
-      renderPalette();
       recalcMixedColor();
+      renderPalette();
       resultRow.style.display = "none";
     }
 
+    // 결과 보기
     function showResult() {
       if (drops.length === 0) {
         matchScoreEl.textContent = "0%";
         matchTextEl.textContent = "아직 아무 물감도 사용하지 않았어요.";
         matchNoteEl.textContent = "팔레트에서 물감을 골라 여러 방울 섞은 뒤 다시 시도해보세요.";
+        resultMixSwatch.style.backgroundColor = rgbToCss([0,0,0]);
+        resultBadge.textContent = "0방울 사용";
         resultRow.style.display = "block";
         return;
       }
@@ -349,24 +676,27 @@ h1 {
       let note = "";
 
       if (score >= 90) {
-        text = "CJ ONSTYLE의 Vibrant Lime에 거의 완벽하게 도달했어요.";
-        note = "메인 화면 액센트 컬러로 바로 써도 될 정도의 정밀한 조색입니다.";
+        text = "거의 브랜드 레벨의 라임그린이에요.";
+        note = "메인 비주얼에도 바로 쓸 수 있을 만큼 Vibrant Lime과 가깝습니다.";
       } else if (score >= 75) {
-        text = "Vibrant Lime의 분위기를 잘 잡아냈어요.";
-        note = "채도·명도를 조금만 더 조정하면 실제 브랜드 컬러와 더 가까워질 수 있어요.";
+        text = "Vibrant Lime 무드를 잘 잡아냈어요.";
+        note = "채도·명도만 조금 더 다듬으면 실제 브랜드 컬러와 더욱 자연스럽게 어울릴 수 있어요.";
       } else if (score >= 55) {
-        text = "브랜드 라임에서 파생된 새로운 변주 컬러입니다.";
-        note = "브랜드 서브 요소나 그래픽 모티프로 활용해 볼 수 있는 톤입니다.";
+        text = "브랜드 라임에서 파생된 변주 컬러입니다.";
+        note = "배경, 그래픽 요소 등에서 유연하게 쓸 수 있는 세컨더리 라임 톤이에요.";
       } else if (score >= 30) {
         text = "꽤 다른 방향의 감성 컬러예요.";
-        note = "인스파이어링 퍼플과 조합하면 또 다른 무드의 브랜드 비주얼을 만들 수 있습니다.";
+        note = "퍼플과 조합하면 실험적인 시즌 컬러 팔레트로 활용할 수 있습니다.";
       } else {
         text = "완전히 새로운 팔레트로 탈주했습니다.";
-        note = "Vibrant Lime과는 거리가 멀지만, 실험적인 캠페인이나 시즌 한정 컬러로 상상해볼 수 있어요.";
+        note = "Vibrant Lime과는 멀지만, 컬러 실험 자체가 브랜드 경험을 확장시켜 줍니다.";
       }
 
       matchTextEl.textContent = text;
       matchNoteEl.textContent = note;
+
+      resultMixSwatch.style.backgroundColor = rgbToCss(mixedColor);
+      resultBadge.textContent = `${drops.length}방울 사용`;
       resultRow.style.display = "block";
     }
 
@@ -377,10 +707,6 @@ h1 {
 
     btnResult.addEventListener("click", showResult);
     btnReset.addEventListener("click", resetAll);
-
-    // 필요하다면 실제 서비스에서는 navigator.onLine 으로
-    // 오프라인일 때만 이 컴포넌트를 노출하도록 조건을 걸면 됩니다.
   </script>
 </body>
 </html>
-
