@@ -413,7 +413,7 @@
     <div class="brand-tag">CJ ONSTYLE · INSPIRING PURPLE × VIBRANT LIME</div>
     <h1>Vibrant Lime 컬러 믹서</h1>
     <div class="subtitle">
-      흰색 · 검은색 · 노란색 · 파란색 · 빨간색만으로<br />
+      다섯 가지 베이스 컬러만으로<br />
       CJ ONSTYLE의 시그니처 라임그린에 얼마나 가까이 갈 수 있을까요?
     </div>
 
@@ -467,7 +467,7 @@
     <!-- 팔레트 섹션 -->
     <div class="palette-section">
       <div class="palette-header">
-        <div>🎨 팔레트에서 물감을 골라 한 방울씩 떨어뜨리세요.</div>
+        <div>🎨 팔레트에서 색을 골라 한 방울씩 떨어뜨리세요.</div>
         <span>클릭할 때마다 1방울 · 조색 횟수 제한 없음</span>
       </div>
       <div class="palette-grid" id="palette"></div>
@@ -480,8 +480,8 @@
     </div>
 
     <div class="helper-text">
-      <span>여러 색을 섞을수록 한 방울의 영향은 작아집니다.</span>
-      <span>CJ ONSTYLE의 라임 무드를 얼마나 정확하게 잡을 수 있는지 테스트해 보세요.</span>
+      <span>각 색은 밝기·채도가 다르기 때문에 생각보다 조합이 까다롭습니다.</span>
+      <span>라임 계열 두 색의 비율을 어떻게 가져가느냐가 관건이에요.</span>
     </div>
 
     <!-- 결과 카드 -->
@@ -511,202 +511,209 @@
   </div>
 
   <script>
-    // === 목표색: Vibrant Lime ===
-    const TARGET = {
-      hex: "#23E896",
-      rgb: [35, 232, 150]
-    };
+  // === 목표색: Vibrant Lime ===
+  const TARGET = {
+    hex: "#23E896",
+    rgb: [35, 232, 150]
+  };
 
-    // === 사용할 물감 5가지 ===
-    const PAINTS = [
-      { id: "white",  nameKo: "화이트", nameEn: "White",  rgb: [255, 255, 255] },
-      { id: "black",  nameKo: "블랙",   nameEn: "Black",  rgb: [0, 0, 0] },
-      { id: "yellow", nameKo: "옐로우", nameEn: "Yellow", rgb: [255, 224, 0] },
-      { id: "blue",   nameKo: "블루",   nameEn: "Blue",   rgb: [0, 105, 255] },
-      { id: "red",    nameKo: "레드",   nameEn: "Red",    rgb: [235, 51, 72] },
-    ];
+  // === 사용할 물감 5가지 (난이도 조정용 팔레트) ===
+  const PAINTS = [
+    { id: "softwhite", nameKo: "소프트 화이트", nameEn: "Soft White", rgb: [245, 245, 245] },
+    { id: "glowpurple", nameKo: "글로우 퍼플", nameEn: "Glow Purple", rgb: [150, 90, 210] },
+    { id: "neonyellow", nameKo: "네온 옐로우", nameEn: "Neon Yellow", rgb: [240, 255, 80] },
+    { id: "limemist", nameKo: "라임 미스트", nameEn: "Lime Mist", rgb: [40, 240, 130] },
+    { id: "aqualime", nameKo: "아쿠아 라임", nameEn: "Aqua Lime", rgb: [25, 216, 190] },
+  ];
 
-    // DOM 참조
-    const targetSwatch = document.getElementById("target-swatch");
-    const targetRgbEl = document.getElementById("target-rgb");
+  // DOM 참조
+  const targetSwatch = document.getElementById("target-swatch");
+  const targetRgbEl = document.getElementById("target-rgb");
+  const mixSwatch = document.getElementById("mix-swatch");
+  const mixLabelEl = document.getElementById("mix-label");
+  const mixRgbEl = document.getElementById("mix-rgb");
+  const dropCountEl = document.getElementById("drop-count");
+  const dropsBarInner = document.getElementById("drops-bar-inner");
+  const paletteEl = document.getElementById("palette");
+  const btnResult = document.getElementById("btn-result");
+  const btnReset = document.getElementById("btn-reset");
+  const resultRow = document.getElementById("result-row");
+  const matchScoreEl = document.getElementById("match-score");
+  const matchTextEl = document.getElementById("match-text");
+  const matchNoteEl = document.getElementById("match-note");
+  const resultTargetSwatch = document.getElementById("result-target");
+  const resultMixSwatch = document.getElementById("result-mix");
+  const resultBadge = document.getElementById("result-badge");
 
-    const mixSwatch = document.getElementById("mix-swatch");
-    const mixLabelEl = document.getElementById("mix-label");
-    const mixRgbEl = document.getElementById("mix-rgb");
-    const dropCountEl = document.getElementById("drop-count");
-    const dropsBarInner = document.getElementById("drops-bar-inner");
+  // 상태
+  let drops = [];       // { rgb: [r,g,b], paintId: string }
+  let mixedColor = [0, 0, 0];
+  let isLocked = false; // 결과 보기 이후에는 true → 다시 섞기 불가
 
-    const paletteEl = document.getElementById("palette");
-    const btnResult = document.getElementById("btn-result");
-    const btnReset = document.getElementById("btn-reset");
+  // 유틸
+  const rgbToCss = ([r,g,b]) => `rgb(${r}, ${g}, ${b})`;
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-    const resultRow = document.getElementById("result-row");
-    const matchScoreEl = document.getElementById("match-score");
-    const matchTextEl = document.getElementById("match-text");
-    const matchNoteEl = document.getElementById("match-note");
-    const resultTargetSwatch = document.getElementById("result-target");
-    const resultMixSwatch = document.getElementById("result-mix");
-    const resultBadge = document.getElementById("result-badge");
+  function colorDistance(c1, c2) {
+    const dr = c1[0] - c2[0];
+    const dg = c1[1] - c2[1];
+    const db = c1[2] - c2[2];
+    return Math.sqrt(dr*dr + dg*dg + db*db);
+  }
 
-    // 상태
-    let drops = [];       // { rgb: [r,g,b], paintId: string }
-    let mixedColor = [0, 0, 0];
+  // 초기 타깃 표시
+  function initTargetView() {
+    targetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
+    targetRgbEl.textContent = `RGB(${TARGET.rgb[0]}, ${TARGET.rgb[1]}, ${TARGET.rgb[2]})`;
+    resultTargetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
+  }
 
-    // 유틸
-    const rgbToCss = ([r,g,b]) => `rgb(${r}, ${g}, ${b})`;
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+  // 팔레트 렌더링 (각 색 사용 방울 수 표시)
+  function renderPalette() {
+    const usage = {};
+    PAINTS.forEach(p => usage[p.id] = 0);
+    drops.forEach(d => usage[d.paintId]++);
 
-    function colorDistance(c1, c2) {
-      const dr = c1[0] - c2[0];
-      const dg = c1[1] - c2[1];
-      const db = c1[2] - c2[2];
-      return Math.sqrt(dr*dr + dg*dg + db*db);
-    }
+    paletteEl.innerHTML = "";
+    PAINTS.forEach(paint => {
+      const card = document.createElement("div");
+      card.className = "paint";
+      card.style.background = rgbToCss(paint.rgb);
 
-    // 초기 타깃 표시
-    function initTargetView() {
-      targetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
-      targetRgbEl.textContent = `RGB(${TARGET.rgb[0]}, ${TARGET.rgb[1]}, ${TARGET.rgb[2]})`;
-      resultTargetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
-    }
+      const inner = document.createElement("div");
+      inner.className = "paint-inner";
 
-    // 팔레트 렌더링 (각 색 사용 방울 수 표시)
-    function renderPalette() {
-      const usage = {};
-      PAINTS.forEach(p => usage[p.id] = 0);
-      drops.forEach(d => usage[d.paintId]++);
+      const label = document.createElement("div");
+      label.className = "paint-label";
+      label.textContent = paint.nameKo;
 
-      paletteEl.innerHTML = "";
-      PAINTS.forEach(paint => {
-        const card = document.createElement("div");
-        card.className = "paint";
-        card.style.background = rgbToCss(paint.rgb);
+      const meta = document.createElement("div");
+      meta.className = "paint-meta";
+      const count = usage[paint.id] || 0;
+      meta.textContent = count > 0 ? `${count}방울` : paint.nameEn;
 
-        const inner = document.createElement("div");
-        inner.className = "paint-inner";
+      inner.appendChild(label);
+      inner.appendChild(meta);
+      card.appendChild(inner);
 
-        const label = document.createElement("div");
-        label.className = "paint-label";
-        label.textContent = paint.nameKo;
-
-        const meta = document.createElement("div");
-        meta.className = "paint-meta";
-        const count = usage[paint.id] || 0;
-        meta.textContent = count > 0 ? `${count}방울` : paint.nameEn;
-
-        inner.appendChild(label);
-        inner.appendChild(meta);
-        card.appendChild(inner);
-
-        card.addEventListener("click", () => addDrop(paint));
-
-        paletteEl.appendChild(card);
+      // 팔레트 클릭 금지 조건
+      card.addEventListener("click", () => {
+        if (!isLocked) addDrop(paint);
       });
-    }
 
-    // 믹스 색 재계산
-    function recalcMixedColor() {
-      if (drops.length === 0) {
-        mixedColor = [0, 0, 0];
-      } else {
-        let r = 0, g = 0, b = 0;
-        drops.forEach(d => {
-          r += d.rgb[0];
-          g += d.rgb[1];
-          b += d.rgb[2];
-        });
-        r = Math.round(r / drops.length);
-        g = Math.round(g / drops.length);
-        b = Math.round(b / drops.length);
-        mixedColor = [r, g, b];
-      }
-      updateMixView();
-    }
+      paletteEl.appendChild(card);
+    });
+  }
 
-    function updateMixView() {
-      mixSwatch.style.backgroundColor = rgbToCss(mixedColor);
-      mixRgbEl.textContent = `RGB(${mixedColor[0]}, ${mixedColor[1]}, ${mixedColor[2]})`;
-      dropCountEl.textContent = drops.length.toString();
-      dropsBarInner.style.width = `${clamp(drops.length / 30 * 100, 0, 100)}%`;
-
-      if (drops.length === 0) {
-        mixLabelEl.textContent = "아직 물감을 넣지 않았어요";
-      } else {
-        mixLabelEl.textContent = `${drops.length}방울의 물감이 섞여 있습니다`;
-      }
-    }
-
-    // 물감 한 방울 추가
-    function addDrop(paint) {
-      drops.push({ rgb: paint.rgb.slice(), paintId: paint.id });
-      recalcMixedColor();
-      renderPalette();
-      resultRow.style.display = "none"; // 새로 섞으면 이전 결과 숨김
-    }
-
-    // 전체 초기화
-    function resetAll() {
-      drops = [];
+  // 믹스 색 재계산
+  function recalcMixedColor() {
+    if (drops.length === 0) {
       mixedColor = [0, 0, 0];
-      recalcMixedColor();
-      renderPalette();
-      resultRow.style.display = "none";
+    } else {
+      let r = 0, g = 0, b = 0;
+      drops.forEach(d => {
+        r += d.rgb[0];
+        g += d.rgb[1];
+        b += d.rgb[2];
+      });
+      r = Math.round(r / drops.length);
+      g = Math.round(g / drops.length);
+      b = Math.round(b / drops.length);
+      mixedColor = [r, g, b];
     }
+    updateMixView();
+  }
 
-    // 결과 보기
-    function showResult() {
-      if (drops.length === 0) {
-        matchScoreEl.textContent = "0%";
-        matchTextEl.textContent = "아직 아무 물감도 사용하지 않았어요.";
-        matchNoteEl.textContent = "팔레트에서 물감을 골라 여러 방울 섞은 뒤 다시 시도해보세요.";
-        resultMixSwatch.style.backgroundColor = rgbToCss([0,0,0]);
-        resultBadge.textContent = "0방울 사용";
-        resultRow.style.display = "block";
-        return;
-      }
+  function updateMixView() {
+    mixSwatch.style.backgroundColor = rgbToCss(mixedColor);
+    mixRgbEl.textContent = `RGB(${mixedColor[0]}, ${mixedColor[1]}, ${mixedColor[2]})`;
+    dropCountEl.textContent = drops.length.toString();
+    dropsBarInner.style.width = `${clamp(drops.length / 30 * 100, 0, 100)}%`;
 
-      const dist = colorDistance(TARGET.rgb, mixedColor);
-      const maxDist = Math.sqrt(255*255*3); // ~441.67
-      let score = Math.round(100 - (dist / maxDist) * 100);
-      score = clamp(score, 0, 100);
-
-      matchScoreEl.textContent = `${score}%`;
-
-      let text = "";
-      let note = "";
-
-      if (score >= 90) {
-        text = "거의 브랜드 레벨의 라임그린이에요.";
-        note = "메인 비주얼에도 바로 쓸 수 있을 만큼 Vibrant Lime과 가깝습니다.";
-      } else if (score >= 75) {
-        text = "Vibrant Lime 무드를 잘 잡아냈어요.";
-        note = "채도·명도만 조금 더 다듬으면 실제 브랜드 컬러와 더욱 자연스럽게 어울릴 수 있어요.";
-      } else if (score >= 55) {
-        text = "브랜드 라임에서 파생된 변주 컬러입니다.";
-        note = "배경, 그래픽 요소 등에서 유연하게 쓸 수 있는 세컨더리 라임 톤이에요.";
-      } else if (score >= 30) {
-        text = "꽤 다른 방향의 감성 컬러예요.";
-        note = "퍼플과 조합하면 실험적인 시즌 컬러 팔레트로 활용할 수 있습니다.";
-      } else {
-        text = "완전히 새로운 팔레트로 탈주했습니다.";
-        note = "Vibrant Lime과는 멀지만, 컬러 실험 자체가 브랜드 경험을 확장시켜 줍니다.";
-      }
-
-      matchTextEl.textContent = text;
-      matchNoteEl.textContent = note;
-
-      resultMixSwatch.style.backgroundColor = rgbToCss(mixedColor);
-      resultBadge.textContent = `${drops.length}방울 사용`;
-      resultRow.style.display = "block";
+    if (drops.length === 0) {
+      mixLabelEl.textContent = "아직 물감을 넣지 않았어요";
+    } else {
+      mixLabelEl.textContent = `${drops.length}방울의 물감이 섞여 있습니다`;
     }
+  }
 
-    // 초기 실행
-    initTargetView();
-    renderPalette();
+  // 물감 한 방울 추가
+  function addDrop(paint) {
+    if (isLocked) return; // 결과 보기 이후 잠김
+    drops.push({ rgb: paint.rgb.slice(), paintId: paint.id });
     recalcMixedColor();
+    renderPalette();
+    resultRow.style.display = "none"; // 새로 섞으면 이전 결과 숨김
+  }
 
-    btnResult.addEventListener("click", showResult);
-    btnReset.addEventListener("click", resetAll);
-  </script>
+  // 전체 초기화
+  function resetAll() {
+    drops = [];
+    mixedColor = [0, 0, 0];
+    isLocked = false;        // 다시 섞기 가능
+    recalcMixedColor();
+    renderPalette();
+    resultRow.style.display = "none";
+  }
+
+  // 결과 보기
+  function showResult() {
+    if (drops.length === 0) {
+      matchScoreEl.textContent = "0%";
+      matchTextEl.textContent = "아직 아무 물감도 사용하지 않았어요.";
+      matchNoteEl.textContent = "팔레트에서 색을 골라 여러 방울 섞은 뒤 다시 시도해보세요.";
+      resultMixSwatch.style.backgroundColor = rgbToCss([0,0,0]);
+      resultBadge.textContent = "0방울 사용";
+      resultRow.style.display = "block";
+      isLocked = true;       // 결과 상태로 잠금
+      return;
+    }
+
+    const dist = colorDistance(TARGET.rgb, mixedColor);
+    const maxDist = Math.sqrt(255*255*3); 
+    let score = Math.round(100 - (dist / maxDist) * 100);
+    score = clamp(score, 0, 100);
+
+    matchScoreEl.textContent = `${score}%`;
+
+    let text = "";
+    let note = "";
+
+    if (score >= 90) {
+      text = "거의 브랜드 레벨의 라임그린이에요.";
+      note = "메인 비주얼에도 바로 쓸 수 있을 만큼 Vibrant Lime과 가깝습니다.";
+    } else if (score >= 75) {
+      text = "Vibrant Lime 무드를 꽤 잘 잡아냈어요.";
+      note = "라임 계열 두 색의 비율을 조금만 더 다듬으면 실제 브랜드 컬러와 더 자연스럽게 맞아떨어질 거예요.";
+    } else if (score >= 55) {
+      text = "브랜드 라임에서 파생된 변주 컬러입니다.";
+      note = "배경이나 그래픽 장식에서 쓸 수 있는 세컨더리 라임 톤 느낌이에요.";
+    } else if (score >= 30) {
+      text = "꽤 다른 방향의 감성 컬러예요.";
+      note = "퍼플과 조합하면 실험적인 시즌 컬러 팔레트로 활용해 볼 수 있습니다.";
+    } else {
+      text = "완전히 새로운 팔레트로 탈주했습니다.";
+      note = "Vibrant Lime과는 멀지만, 이런 컬러 실험 자체가 브랜드 경험을 확장시켜 줍니다.";
+    }
+
+    matchTextEl.textContent = text;
+    matchNoteEl.textContent = note;
+
+    resultMixSwatch.style.backgroundColor = rgbToCss(mixedColor);
+    resultBadge.textContent = `${drops.length}방울 사용`;
+    resultRow.style.display = "block";
+
+    // 🔒 결과 보기 이후 잠금!
+    isLocked = true;
+  }
+
+  // 초기 실행
+  initTargetView();
+  renderPalette();
+  recalcMixedColor();
+
+  btnResult.addEventListener("click", showResult);
+  btnReset.addEventListener("click", resetAll);
+</script>
 </body>
 </html>
