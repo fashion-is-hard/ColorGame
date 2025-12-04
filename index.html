@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>CJ ONSTYLE 컬러 믹서 – Vibrant Lime Match</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #2b0f5b 0, #120421 45%, #05020d 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      color: #f7f7f7;
+    }
+
+    .game-root {
+      width: 760px;
+      max-width: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow:
+        0 0 0 3px rgba(0,0,0,0.7),
+        0 26px 60px rgba(0,0,0,0.95);
+      padding: 20px 22px 22px;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 22px;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-bottom: 14px;
+    }
+
+    .top-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      flex: 1 1 320px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.05), rgba(0,0,0,0.7));
+      font-size: 12px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.9;
+    }
+
+    .panel-pill.target {
+      background: rgba(35, 232, 150, 0.15);
+      border-color: rgba(35, 232, 150, 0.7);
+      color: #9cfdd8;
+    }
+
+    .panel-pill.mix {
+      background: rgba(115, 50, 185, 0.25);
+      border-color: rgba(222, 205, 255, 0.4);
+      color: #f1e7ff;
+    }
+
+    .panel-label {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    .swatch-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      border: 2px solid rgba(0,0,0,0.9);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.15),
+        inset 0 0 0 1px rgba(255,255,255,0.1);
+      background: #222;
+    }
+
+    .panel-text-main {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .panel-rgb {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 4px;
+    }
+
+    .panel-desc {
+      font-size: 11px;
+      opacity: 0.78;
+    }
+
+    .drops-info {
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.82;
+    }
+
+    .drops-bar {
+      margin-top: 4px;
+      height: 6px;
+      width: 100%;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .drops-bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #23e896, #ffeb3b);
+      transition: width 0.15s ease-out;
+    }
+
+    .palette-section {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.04), rgba(0,0,0,0.85));
+      margin-bottom: 12px;
+    }
+
+    .palette-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    .palette-header span {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .paint {
+      position: relative;
+      padding-top: 70%;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.8);
+      cursor: pointer;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.15),
+        0 4px 14px rgba(0,0,0,0.72);
+      overflow: hidden;
+      transition: transform 0.07s ease, box-shadow 0.07s ease;
+    }
+
+    .paint:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.35),
+        0 10px 22px rgba(0,0,0,0.9);
+    }
+
+    .paint-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px 8px;
+      color: #111;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .paint-label {
+      align-self: flex-start;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.86);
+      font-size: 11px;
+    }
+
+    .paint-meta {
+      align-self: flex-end;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.48);
+      color: #fff;
+      font-size: 10px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      margin-top: 2px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.07s ease, box-shadow 0.07s ease,
+        filter 0.07s ease;
+    }
+
+    button:active {
+      transform: translateY(2px);
+      box-shadow: none;
+      filter: brightness(0.96);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #23e896, #b3ff6a);
+      color: #032018;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-secondary {
+      background: rgba(0,0,0,0.4);
+      color: #f5f5f5;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.8);
+    }
+
+    .helper-text {
+      font-size: 11px;
+      opacity: 0.78;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .result-row {
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.16);
+      font-size: 12px;
+    }
+
+    .result-main {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .match-score {
+      font-size: 24px;
+      font-weight: 700;
+      color: #23e896;
+    }
+
+    .result-note {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      .game-root {
+        padding: 16px;
+      }
+      .swatch {
+        width: 60px;
+        height: 60px;
+      }
+      .palette-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-root">
+    <div class="brand-tag">CJ ONSTYLE · INSPIRING PURPLE × VIBRANT LIME</div>
+    <h1>Vibrant Lime 컬러 믹서</h1>
+    <div class="subtitle">
+      흰색 · 검은색 · 노란색 · 파란색 · 빨간색만으로 CJ ONSTYLE의<br />
+      시그니처 라임그린에 얼마나 가까이 갈 수 있을까요?
+    </div>
+
+    <div class="top-row">
+      <!-- 목표색 패널 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-pill target">Target</div>
+            <span class="panel-label">목표 컬러 – Vibrant Lime</span>
+          </div>
+        </div>
+        <div class="swatch-row">
+          <div class="swatch" id="target-swatch"></div>
+          <div>
+            <div class="panel-text-main" id="target-name">#23E896</div>
+            <div class="panel-rgb" id="target-rgb">RGB(35, 232, 150)</div>
+            <div class="panel-desc">
+              CJ ONSTYLE 아이덴티티에서 Inspiring Purple과 함께 쓰이는
+              네온 라임 포인트 컬러입니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 믹스된 색 패널 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-pill mix">Mix</div>
+            <span class="panel-label">내가 만든 컬러</span>
+          </div>
+        </div>
+        <div class="swatch-row">
+          <div class="swatch" id="mix-swatch"></div>
+          <div>
+            <div class="panel-text-main" id="mix-label">
+              아직 물감을 넣지 않았어요
+            </div>
+            <div class="panel-rgb" id="mix-rgb">RGB(0, 0, 0)</div>
+            <div class="drops-info">
+              사용한 물감 방울 수:
+              <span id="drop-count">0</span>
+            </div>
+            <div class="drops-bar">
+              <div class="drops-bar-inner" id="drops-bar-inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 팔레트 섹션 -->
+    <div class="palette-section">
+      <div class="palette-header">
+        <div>🎨 팔레트에서 물감을 골라 한 방울씩 떨어뜨리세요.</div>
+        <span>클릭할 때마다 1방울 · 조색 횟수 제한 없음</span>
+      </div>
+      <div class="palette-grid" id="palette"></div>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="controls">
+      <button class="btn-primary" id="btn-result">결과 보기 (Vibrant Lime과 비교)</button>
+      <button class="btn-secondary" id="btn-reset">전체 초기화</button>
+    </div>
+
+    <div class="helper-text">
+      <span>여러 색을 섞을수록 한 방울의 영향은 작아집니다.</span>
+      <span>원하면 한 가지 색만으로도 얼마나 가까운지 테스트해 보세요.</span>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div class="result-row" id="result-row" style="display:none;">
+      <div class="result-main">
+        <div class="match-score" id="match-score">0%</div>
+        <div id="match-text">아직 결과를 보지 않았어요.</div>
+      </div>
+      <div class="result-note" id="match-note"></div>
+    </div>
+  </div>
+
+  <script>
+    // === 목표색: 이미지에서 읽은 Vibrant Lime (#23E896, RGB 35/232/150) ===
+    const TARGET = {
+      hex: "#23E896",
+      rgb: [35, 232, 150]
+    };
+
+    // === 사용할 물감 5가지 (화면용 RGB 값) ===
+    const PAINTS = [
+      { id: "white", nameKo: "화이트", nameEn: "White",  rgb: [255, 255, 255] },
+      { id: "black", nameKo: "블랙",   nameEn: "Black",  rgb: [0, 0, 0] },
+      { id: "yellow",nameKo: "옐로우", nameEn: "Yellow", rgb: [255, 224, 0] },
+      { id: "blue",  nameKo: "블루",   nameEn: "Blue",   rgb: [0, 105, 255] },
+      { id: "red",   nameKo: "레드",   nameEn: "Red",    rgb: [235, 51, 72] },
+    ];
+
+    const targetSwatch = document.getElementById("target-swatch");
+    const targetRgbEl = document.getElementById("target-rgb");
+
+    const mixSwatch = document.getElementById("mix-swatch");
+    const mixLabelEl = document.getElementById("mix-label");
+    const mixRgbEl = document.getElementById("mix-rgb");
+    const dropCountEl = document.getElementById("drop-count");
+    const dropsBarInner = document.getElementById("drops-bar-inner");
+
+    const paletteEl = document.getElementById("palette");
+    const btnResult = document.getElementById("btn-result");
+    const btnReset = document.getElementById("btn-reset");
+
+    const resultRow = document.getElementById("result-row");
+    const matchScoreEl = document.getElementById("match-score");
+    const matchTextEl = document.getElementById("match-text");
+    const matchNoteEl = document.getElementById("match-note");
+
+    let drops = [];       // {rgb: [r,g,b], paintId: string}
+    let mixedColor = [0, 0, 0];
+
+    // --- 유틸 ---
+    const rgbToCss = ([r,g,b]) => `rgb(${r}, ${g}, ${b})`;
+
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    function colorDistance(c1, c2) {
+      const dr = c1[0] - c2[0];
+      const dg = c1[1] - c2[1];
+      const db = c1[2] - c2[2];
+      return Math.sqrt(dr*dr + dg*dg + db*db);
+    }
+
+    // --- 초기 세팅 ---
+    function initTargetView() {
+      targetSwatch.style.backgroundColor = rgbToCss(TARGET.rgb);
+      targetRgbEl.textContent = `RGB(${TARGET.rgb[0]}, ${TARGET.rgb[1]}, ${TARGET.rgb[2]})`;
+    }
+
+    function renderPalette() {
+      // 각 물감별 방울 수 집계
+      const usage = {};
+      PAINTS.forEach(p => usage[p.id] = 0);
+      drops.forEach(d => usage[d.paintId]++);
+
+      paletteEl.innerHTML = "";
+      PAINTS.forEach(paint => {
+        const card = document.createElement("div");
+        card.className = "paint";
+        card.style.background = rgbToCss(paint.rgb);
+
+        const inner = document.createElement("div");
+        inner.className = "paint-inner";
+
+        const label = document.createElement("div");
+        label.className = "paint-label";
+        label.textContent = paint.nameKo;
+
+        const meta = document.createElement("div");
+        meta.className = "paint-meta";
+        const count = usage[paint.id] || 0;
+        meta.textContent = count > 0 ? `${count}방울` : paint.nameEn;
+
+        inner.appendChild(label);
+        inner.appendChild(meta);
+        card.appendChild(inner);
+
+        card.addEventListener("click", () => addDrop(paint));
+
+        paletteEl.appendChild(card);
+      });
+    }
+
+    function recalcMixedColor() {
+      if (drops.length === 0) {
+        mixedColor = [0, 0, 0];
+      } else {
+        let r = 0, g = 0, b = 0;
+        drops.forEach(d => {
+          r += d.rgb[0];
+          g += d.rgb[1];
+          b += d.rgb[2];
+        });
+        r = Math.round(r / drops.length);
+        g = Math.round(g / drops.length);
+        b = Math.round(b / drops.length);
+        mixedColor = [r, g, b];
+      }
+      updateMixView();
+    }
+
+    function updateMixView() {
+      mixSwatch.style.backgroundColor = rgbToCss(mixedColor);
+      mixRgbEl.textContent = `RGB(${mixedColor[0]}, ${mixedColor[1]}, ${mixedColor[2]})`;
+      dropCountEl.textContent = drops.length.toString();
+      dropsBarInner.style.width = `${clamp(drops.length / 30 * 100, 0, 100)}%`;
+
+      if (drops.length === 0) {
+        mixLabelEl.textContent = "아직 물감을 넣지 않았어요";
+      } else {
+        mixLabelEl.textContent = `${drops.length}방울의 물감이 섞여 있습니다`;
+      }
+    }
+
+    function addDrop(paint) {
+      drops.push({ rgb: paint.rgb.slice(), paintId: paint.id });
+      recalcMixedColor();
+      renderPalette();
+      // 새로 조색되면 이전 결과는 숨김
+      resultRow.style.display = "none";
+    }
+
+    function resetAll() {
+      drops = [];
+      mixedColor = [0, 0, 0];
+      renderPalette();
+      recalcMixedColor();
+      resultRow.style.display = "none";
+    }
+
+    function showResult() {
+      if (drops.length === 0) {
+        matchScoreEl.textContent = "0%";
+        matchTextEl.textContent = "아직 아무 물감도 사용하지 않았어요.";
+        matchNoteEl.textContent = "팔레트에서 물감을 골라 여러 방울 섞은 뒤 다시 시도해보세요.";
+        resultRow.style.display = "block";
+        return;
+      }
+
+      const dist = colorDistance(TARGET.rgb, mixedColor);
+      const maxDist = Math.sqrt(255*255*3); // ~441.67
+      let score = Math.round(100 - (dist / maxDist) * 100);
+      score = clamp(score, 0, 100);
+
+      matchScoreEl.textContent = `${score}%`;
+
+      let text = "";
+      let note = "";
+
+      if (score >= 90) {
+        text = "CJ ONSTYLE의 Vibrant Lime에 거의 완벽하게 도달했어요.";
+        note = "메인 화면 액센트 컬러로 바로 써도 될 정도의 정밀한 조색입니다.";
+      } else if (score >= 75) {
+        text = "Vibrant Lime의 분위기를 잘 잡아냈어요.";
+        note = "채도·명도를 조금만 더 조정하면 실제 브랜드 컬러와 더 가까워질 수 있어요.";
+      } else if (score >= 55) {
+        text = "브랜드 라임에서 파생된 새로운 변주 컬러입니다.";
+        note = "브랜드 서브 요소나 그래픽 모티프로 활용해 볼 수 있는 톤입니다.";
+      } else if (score >= 30) {
+        text = "꽤 다른 방향의 감성 컬러예요.";
+        note = "인스파이어링 퍼플과 조합하면 또 다른 무드의 브랜드 비주얼을 만들 수 있습니다.";
+      } else {
+        text = "완전히 새로운 팔레트로 탈주했습니다.";
+        note = "Vibrant Lime과는 거리가 멀지만, 실험적인 캠페인이나 시즌 한정 컬러로 상상해볼 수 있어요.";
+      }
+
+      matchTextEl.textContent = text;
+      matchNoteEl.textContent = note;
+      resultRow.style.display = "block";
+    }
+
+    // 초기 실행
+    initTargetView();
+    renderPalette();
+    recalcMixedColor();
+
+    btnResult.addEventListener("click", showResult);
+    btnReset.addEventListener("click", resetAll);
+
+    // 필요하다면 실제 서비스에서는 navigator.onLine 으로
+    // 오프라인일 때만 이 컴포넌트를 노출하도록 조건을 걸면 됩니다.
+  </script>
+</body>
+</html>
